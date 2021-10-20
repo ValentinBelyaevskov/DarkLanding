@@ -775,6 +775,21 @@ body {
     padding: 0 0 50.625% 0;
   }
 }
+@media (max-width: 812px) and (orientation: landscape) {
+  .watch-preview__youtube-video {
+    width: 70%;
+    left: 50%;
+    top: 50%;
+    margin-left: -35%;
+    margin-top: calc(-39.375% / 2);
+    padding: 0 0 39.375% 0;
+  }
+  .watch-preview .hide {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+}
 @media (max-width: 1420px) {
   .reasons__image {
     -webkit-box-flex: 0;

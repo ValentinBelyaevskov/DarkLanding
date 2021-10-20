@@ -6,6 +6,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
+   <link rel="shortcut icon" href="#">
    <link rel="stylesheet" href="css/style.css">
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link
@@ -96,7 +97,7 @@
                               </div>
                            </div>
                            <div class="watch-preview__youtube-video">
-                              <iframe id="player" src="https://www.youtube.com/embed/fLeJJPxua3E"
+                              <iframe id="player" src="https://www.youtube.com/embed/fLeJJPxua3E?enablejsapi=1"
                                  title="YouTube video player" frameborder="0"
                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                  allowfullscreen></iframe>
@@ -126,8 +127,12 @@
       <div class="background"></div>
    </div>
 
-   <script>
 
+   <script>
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       // Функция onYouTubeIframeAPIReady выполняется сразу после загрузки
       // кода API проигрывателя.
       var player;
@@ -135,7 +140,18 @@
          player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: 'M7lc1UVf-VE',
+            videoId: 'fLeJJPxua3E',
+            playerVars: {
+               autoplay: 1,        // Auto-play the video on load
+               controls: 1,        // Show pause/play buttons in player
+               showinfo: 0,        // Hide the video title
+               modestbranding: 1,  // Hide the Youtube Logo
+               loop: 1,            // Run the video in a loop
+               fs: 0,              // Hide the full screen button
+               cc_load_policy: 0, // Hide closed captions
+               iv_load_policy: 3,  // Hide the Video Annotations
+               autohide: 0         // Hide video controls when playing
+            },
             events: {
                'onReady': onPlayerReady,
                'onStateChange': onPlayerStateChange
@@ -145,7 +161,9 @@
 
       // Функция onPlayerReady выполняется при активации события onReady. 
       function onPlayerReady(event) {
-
+         // event.target.playVideo();
+         // Mute!
+         event.target.mute();
       }
 
       // API вызовет функцию onPlayerStateChange, когда изменится состояние
@@ -155,8 +173,8 @@
       }
 
    </script>
-
    <script src="js/main.js"></script>
+
 </body>
 
 </html>
