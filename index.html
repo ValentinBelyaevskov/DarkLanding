@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&family=Montserrat:wght@400;500&family=Open+Sans:wght@400;600&family=Rubik:wght@400;500&display=swap"
+      rel="stylesheet">
+</head>
+
+<body>
+   <div class="wrapper">
+      <header class="header">
+         <div class="header__container container">
+            <div class="header__logo">
+               <img src="image/logo.svg" alt="">
+            </div>
+            <nav class="header__menu menu">
+               <ul class="menu__list">
+                  <li class="menu__list-item">
+                     <a href="">About</a>
+                  </li>
+                  <li class="menu__list-item">
+                     <a href="">Gallery</a>
+                  </li>
+                  <li class="menu__list-item">
+                     <a href="">Pricing</a>
+                  </li>
+                  <li class="menu__list-item">
+                     <a href="">FAQ</a>
+                  </li>
+                  <li class="menu__list-item">
+                     <a href="">Benefits</a>
+                  </li>
+               </ul>
+               <ul class="menu__sing-in-or-up">
+                  <li class="menu__list-item">
+                     <a href="">Sing in</a>
+                  </li>
+                  <li class="menu__list-item">
+                     <a href="">Sing up</a>
+                  </li>
+               </ul>
+               <div class="menu__bar">
+                  <div class="menu__logo">
+                     <img src="image/logo.svg" alt="">
+                  </div>
+                  <div class="menu__hide hide">
+                     <span></span>
+                  </div>
+               </div>
+            </nav>
+            <div class="header__buttons buttons">
+               <div class="header__sing-in buttons__item--transparent">
+                  <a href="" class="button">Sign In</a>
+               </div>
+               <div class="header__sing-up buttons__item--filled">
+                  <a href="" class="button">Sign Up</a>
+               </div>
+            </div>
+            <div class="header__burger">
+               <span></span>
+            </div>
+         </div>
+      </header>
+      <main class="page">
+         <div class="page__reasons reasons">
+            <div class="reasons__content">
+               <div class="reasons__container container">
+                  <div class="reasons__body">
+                     <h1 class="reasons__title">
+                        Many reasons to get up and start to get back in the business
+                     </h1>
+                     <div class="reasons__entry">
+                        The harder you work for something, the greater you’ll feel when you achieve it.
+                     </div>
+                     <div class="reasons__buttons buttons">
+                        <div class="reasons__learn-more buttons__item--filled">
+                           <a href="" class="button">learn more</a>
+                        </div>
+                        <div class="reasons__demo buttons__item--transparent">
+                           <a href="" class="button">demo</a>
+                        </div>
+                     </div>
+                     <div class="reasons__watch-preview watch-preview">
+                        <div class="watch-preview__video">
+                           <img class="watch-preview__play-video" src="image/play.svg" alt="play button"></img>
+                           <div class="watch-preview__youtube-background">
+                              <div class="watch-preview__hide hide">
+                                 <span></span>
+                              </div>
+                           </div>
+                           <div class="watch-preview__youtube-video">
+                              <iframe id="player" src="https://www.youtube.com/embed/fLeJJPxua3E"
+                                 title="YouTube video player" frameborder="0"
+                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                 allowfullscreen></iframe>
+                           </div>
+                        </div>
+                        <div class="watch-preview__text">
+                           <div class="watch-preview__description">
+                              The harder you work for something, the greater you’ll feel when you achieve it.
+                           </div>
+                           <a class="watch-preview__inscription">
+                              Watch preview
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="reasons__image">
+               <img src="image/man.png" alt="">
+            </div>
+         </div>
+      </main>
+      <!-- <footer class="footer">
+
+      </footer> -->
+      <div class="gragient-background"></div>
+      <div class="background"></div>
+   </div>
+
+   <script>
+
+      // Функция onYouTubeIframeAPIReady выполняется сразу после загрузки
+      // кода API проигрывателя.
+      var player;
+      function onYouTubeIframeAPIReady() {
+         player = new YT.Player('player', {
+            height: '360',
+            width: '640',
+            videoId: 'M7lc1UVf-VE',
+            events: {
+               'onReady': onPlayerReady,
+               'onStateChange': onPlayerStateChange
+            }
+         });
+      }
+
+      // Функция onPlayerReady выполняется при активации события onReady. 
+      function onPlayerReady(event) {
+
+      }
+
+      // API вызовет функцию onPlayerStateChange, когда изменится состояние
+      // проигрывателя (воспроизведение, пауза, остановка и т. д.).
+      function onPlayerStateChange(event) {
+
+      }
+
+   </script>
+
+   <script src="js/main.js"></script>
+</body>
+
+</html>
