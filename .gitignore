@@ -1,2 +1,2 @@
-/source
-.config
+source/
+*.config
