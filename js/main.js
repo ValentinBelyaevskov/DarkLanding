@@ -1,83 +1,192 @@
-// burger click listener
+const getValueWithoutMeasurers = value => value.split("").slice(0, -2).join("");
+
+const setBodyOverflow = overflow => document.body.style.overflow = overflow;
+
+const paddingForTheScrollHIde = () => {
+   let widthWithScroll = document.body.clientWidth;
+   setBodyOverflow("hidden");
+   let widthWithoutScroll = document.body.clientWidth;
+   let scrollbarWidth = widthWithoutScroll - widthWithScroll;
+   document.body.style.paddingRight = `${scrollbarWidth}px`;
+}
+
+const paddingForTheScrollShow = () => {
+   document.body.style.paddingRight = 0;
+}
+
+const setHeaderZIndex = index => header.style.zIndex = index;
+
+const returnToStartingVideo = () => {
+   player.stopVideo();
+}
+
+const pauseVideo = () => {
+   player.pauseVideo();
+}
+
+const getVideoStatus = () => player.getPlayerState()
+// console.log(player.getPlayerState())
+
+// ? burger click ----------------------------------------------------------------
+
 const menu = document.querySelector(".menu");
-const header = document.querySelector(".header")
+const header = document.querySelector(".header");
 const headerBurger = document.querySelector(".header__burger");
 const menuHide = document.querySelector(".menu__hide");
 
+const setBurgerStyle = (element, transitionDuration, left, callback) => {
+   element.style.transitionDuration = transitionDuration;
+   element.style.left = left;
+   if (callback) callback();
+}
+
+const showBurgerMenu = () => {
+   setBurgerStyle(menu, "0.5s", 0, () => {
+      paddingForTheScrollHIde();
+      pauseVideo();
+   });
+}
+
+const hideBurgerMenu = () => {
+   setBurgerStyle(menu, "0.5s", "-100vw", () => {
+      setBodyOverflow("auto");
+   });
+   paddingForTheScrollShow();
+}
+
+// * header events--------------------------------------------------------------
 headerBurger.addEventListener("click", () => {
-   menu.style.transitionDuration = "0.5s"
-   menu.style.left = 0;
-
-   let widthWithScroll = document.body.clientWidth;
-   document.body.style.overflow = "hidden";
-
-   let widthWithoutScroll = document.body.clientWidth;
-   let scrollbarWidth = widthWithoutScroll - widthWithScroll
-
-   document.body.style.paddingRight = `${scrollbarWidth}px`
-
-})
-
-menuHide.addEventListener("click", () => {
-   menu.style.transitionDuration = "0.5s"
-   menu.style.left = "-100vw"
-   document.body.style.overflow = "auto";
-   document.body.style.paddingRight = 0;
-})
-
+   showBurgerMenu();
+});
+menuHide.addEventListener("click", hideBurgerMenu);
 menu.addEventListener("transitionend", () => menu.style.transitionDuration = "0s");
 
-const getValueWithoutMeasurers = value => value.split("").slice(0, -2).join("");
 
-// watch-preview click listener
+// ? watch-preview click --------------------------------------------------------
+
 const playButton = document.querySelector(".watch-preview__play-video");
 const watchPreviewVideo = document.querySelector(".watch-preview__video");
+const youtubeVideo = document.querySelector(".watch-preview__youtube-video");
+const videoBackground = document.querySelector(".watch-preview__youtube-background");
 
-watchPreviewVideo.addEventListener("click", (e) => {
+const showElement = (element, showClass, animate, callback) => {
+   element.style.display = "unset";
+   if (animate) {
+      setTimeout(() => {
+         element.classList.add(showClass);
+      }, 0);
+   } else {
+      element.classList.add(showClass);
+   }
+   if (callback) callback();
+}
 
-   let videoContainer = e.currentTarget.querySelector(".watch-preview__youtube-video");
-   let videoBackground = e.currentTarget.querySelector(".watch-preview__youtube-background");
+const hideElement = (element, showClass, animate, callback) => {
+   element.classList.remove(showClass);
+   if (animate) {
+      element.addEventListener("transitionend", () => {
+         element.style.display = "none";
+         if (callback) callback();
+      }, { once: true });
+   } else {
+      element.style.display = "none";
+      if (callback) callback();
+   }
+}
+
+const hideLandscapeVideo = (video, videoBackground) => {
+   hideElement(video, "show-video", true);
+   hideElement(videoBackground, "show-video-background", true, () => {
+      paddingForTheScrollShow();
+      setBodyOverflow("auto");
+      setHeaderZIndex(3);
+      screen.orientation.unlock();
+      returnToStartingVideo();
+   });
+   pauseVideo();
+}
+
+const showLandscapeVideo = (video, videoBackground) => {
+   showElement(video, "show-video", true);
+   showElement(videoBackground, "show-video-background", true, () => {
+      setHeaderZIndex(2);
+      paddingForTheScrollHIde();
+   });
+}
+
+const watchPreviewVideoHandler = e => {
+   if (document.documentElement.clientWidth <= 414) return;
 
    if (e.target.closest(".watch-preview__hide")) {
-      videoContainer.style.opacity = 0;
-      videoBackground.style.opacity = 0;
-      header.style.zIndex = 3;
-      
-      videoContainer.addEventListener("transitionend", () => {
-         videoContainer.style.display = "none"
-      }, {once: true});
-      videoBackground.addEventListener("transitionend", () => {
-         videoBackground.style.display = "none"
-         document.body.style.paddingRight = 0;
-         document.body.style.overflow = "auto";
-      }, {once: true});
-      console.log("hide");
-      // player.playVideo()
-      player.pauseVideo()
-      player.seekTo(0, false)
+      hideLandscapeVideo(youtubeVideo, videoBackground);
       return;
    }
 
    if (e.target.className !== "watch-preview__play-video") return;
 
-   console.log("show")
+   showLandscapeVideo(youtubeVideo, videoBackground);
+}
 
-   header.style.zIndex = 2;
+const windowResizeHandler = () => {
+   console.log(screen.orientation);
+   if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
+      hideElement(videoBackground, "show-video-background", false, () => {
+         paddingForTheScrollShow();
+         setBodyOverflow("auto");
+         setHeaderZIndex(3);
+      });
 
-   setTimeout(() => {
-      videoContainer.style.opacity = 1;
-      videoBackground.style.opacity = 0.97;
-   }, 0);
+      showElement(youtubeVideo, "show-video", false);
 
-   videoContainer.style.display = "unset";
-   videoBackground.style.display = "unset";
+   } else if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth > 414) {
+      if (getVideoStatus() === 5) {
+         hideElement(youtubeVideo, "show-video", false);
+         hideElement(videoBackground, "show-video-background", false);
+      }
 
-   let widthWithScroll = document.body.clientWidth;
-   document.body.style.overflow = "hidden";
-   let widthWithoutScroll = document.body.clientWidth;
-   let scrollbarWidth = widthWithoutScroll - widthWithScroll
+      if (getVideoStatus() === 1 || getVideoStatus() === 2) {
+         showElement(videoBackground, "show-video-background", false);
+         setHeaderZIndex(2);
+      }
+   }
+}
 
-   document.body.style.paddingRight = `${scrollbarWidth}px`
+const orientationChangeHandler = () => {
+   if (screen.orientation.type === "landscape-primary") {
+      if (getVideoStatus() === 1 || getVideoStatus() === 2) {
+         screen.orientation.unlock();
+         showElement(youtubeVideo, "show-video", false);
+         showElement(videoBackground, "show-video-background", false, () => {
+            setHeaderZIndex(2);
+            paddingForTheScrollHIde();
+         });
+      }
 
-})
+      if (getVideoStatus() === 5) {
+         hideElement(youtubeVideo, "show-video", false);
+         hideElement(videoBackground, "show-video-background", false);
 
+      }
+   }
+
+   if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
+      hideElement(videoBackground, "show-video-background", false, () => {
+         paddingForTheScrollShow();
+         setBodyOverflow("auto");
+         setHeaderZIndex(3);
+      });
+
+      if (getVideoStatus() === 5) {
+         showElement(youtubeVideo, "show-video", false);
+      }
+   }
+}
+
+// * burger events------------------------------------------------------------
+watchPreviewVideo.addEventListener("click", watchPreviewVideoHandler);
+watchPreviewVideo.addEventListener("touchstart", e => {
+   e.preventDefault();
+   watchPreviewVideoHandler(e);
+});
+window.addEventListener("resize", windowResizeHandler);
+screen.orientation.addEventListener('change', orientationChangeHandler);

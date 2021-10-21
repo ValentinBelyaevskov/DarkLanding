@@ -97,10 +97,11 @@
                               </div>
                            </div>
                            <div class="watch-preview__youtube-video">
-                              <iframe id="player" src="https://www.youtube.com/embed/fLeJJPxua3E?enablejsapi=1"
+                              <!-- <iframe id="player" src="https://www.youtube.com/embed/fLeJJPxua3E?enablejsapi=1"
                                  title="YouTube video player" frameborder="0"
-                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                 allowfullscreen></iframe>
+                                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                 allowfullscreen></iframe> -->
+                                 <iframe id="player" src="https://www.youtube.com/embed/oLWScthpAgY?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                            </div>
                         </div>
                         <div class="watch-preview__text">
@@ -140,15 +141,16 @@
          player = new YT.Player('player', {
             height: '360',
             width: '640',
-            videoId: 'fLeJJPxua3E',
+            // videoId: 'fLeJJPxua3E',
+            videoId: 'oLWScthpAgY',
             playerVars: {
-               autoplay: 1,        // Auto-play the video on load
-               controls: 1,        // Show pause/play buttons in player
+               autoplay: 0,        // Auto-play the video on load
+               controls: 2,        // Show pause/play buttons in player
                showinfo: 0,        // Hide the video title
                modestbranding: 1,  // Hide the Youtube Logo
                loop: 1,            // Run the video in a loop
                fs: 0,              // Hide the full screen button
-               cc_load_policy: 0, // Hide closed captions
+               cc_load_policy: 0,  // Hide closed captions
                iv_load_policy: 3,  // Hide the Video Annotations
                autohide: 0         // Hide video controls when playing
             },
@@ -161,9 +163,10 @@
 
       // Функция onPlayerReady выполняется при активации события onReady. 
       function onPlayerReady(event) {
+         event.target.unMute();
          // event.target.playVideo();
          // Mute!
-         event.target.mute();
+         // event.target.mute();
       }
 
       // API вызовет функцию onPlayerStateChange, когда изменится состояние
