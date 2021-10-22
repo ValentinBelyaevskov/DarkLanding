@@ -33,6 +33,7 @@ const menu = document.querySelector(".menu");
 const header = document.querySelector(".header");
 const headerBurger = document.querySelector(".header__burger");
 const menuHide = document.querySelector(".menu__hide");
+const clientsElem = document.querySelector(".clients");
 
 const setBurgerStyle = (element, transitionDuration, left, callback) => {
    element.style.transitionDuration = transitionDuration;
@@ -102,6 +103,7 @@ const hideLandscapeVideo = (video, videoBackground) => {
       setHeaderZIndex(3);
       screen.orientation.unlock();
       returnToStartingVideo();
+      clientsElem.style.zIndex = 2;
    });
    pauseVideo();
 }
@@ -111,6 +113,7 @@ const showLandscapeVideo = (video, videoBackground) => {
    showElement(videoBackground, "show-video-background", true, () => {
       setHeaderZIndex(2);
       paddingForTheScrollHIde();
+      clientsElem.style.zIndex = 1;
    });
 }
 
@@ -128,7 +131,6 @@ const watchPreviewVideoHandler = e => {
 }
 
 const windowResizeHandler = () => {
-   console.log(screen.orientation);
    if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
       hideElement(videoBackground, "show-video-background", false, () => {
          paddingForTheScrollShow();
@@ -159,6 +161,7 @@ const orientationChangeHandler = () => {
          showElement(videoBackground, "show-video-background", false, () => {
             setHeaderZIndex(2);
             paddingForTheScrollHIde();
+
          });
       }
 
@@ -190,3 +193,29 @@ watchPreviewVideo.addEventListener("touchstart", e => {
 });
 window.addEventListener("resize", windowResizeHandler);
 screen.orientation.addEventListener('change', orientationChangeHandler);
+
+// ? include clients elements ----------------------------------------------
+
+const clients = [
+   {name: "profitWell", logo: "image/clients/profit_well.svg"},
+   {name: "appcues", logo: "image/clients/appcues.svg"},
+   {name: "snipBob", logo: "image/clients/snip_bob.svg"},
+   {name: "bench", logo: "image/clients/bench.svg"},
+   {name: "subbly", logo: "image/clients/subbly.svg"},
+   {name: "demio", logo: "image/clients/demio.svg"},
+]
+
+const createClientsItem = (parentElement, client) => {
+   const clientItem = document.createElement("div");
+   const clientLogo = document.createElement("img");
+
+   clientItem.classList.add("clients__item");
+   clientLogo.alt = client.name;
+   clientLogo.src = client.logo;
+   clientItem.append(clientLogo)
+   parentElement.append(clientItem)
+}
+
+clients.forEach(item => {
+   createClientsItem(document.querySelector(".clients__block"), item)
+})
