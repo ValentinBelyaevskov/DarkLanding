@@ -24,7 +24,7 @@ const pauseVideo = () => {
    player.pauseVideo();
 }
 
-const getVideoStatus = () => player.getPlayerState()
+const getVideoStatus = () => player.getPlayerState();
 // console.log(player.getPlayerState())
 
 // ? burger click ----------------------------------------------------------------
