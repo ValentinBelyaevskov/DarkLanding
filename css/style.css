@@ -724,7 +724,6 @@ body {
           transform: translate(-50%, -50%);
   padding: 0 0 450px 0;
   width: 80%;
-  max-width: 800px;
   border-radius: 10px;
 }
 .watch-preview__youtube-video iframe {

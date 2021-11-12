@@ -92,7 +92,7 @@ menu.addEventListener("transitionend", () => setMenuTransitionDuration("0s"));
 window.addEventListener("resize", () => hideMenu("0"));
 
 
-// ? Play video click --------------------------------------------------------
+// ? Video play button click --------------------------------------------------------
 
 const playButton = document.querySelector(".watch-preview__play-video");
 const watchPreviewVideo = document.querySelector(".watch-preview__video");
@@ -119,6 +119,7 @@ const videoBighWidthAlingment = () => {
    youtubeVideo.style.padding = "0 0 450px 0";
 }
 
+// ! VIDEO SIZE                                                      
 const setVideoSize = (orientationChange) => {
    const width = orientationChange ? document.documentElement.clientHeight : document.documentElement.clientWidth;
    const height = orientationChange ? document.documentElement.clientWidth : document.documentElement.clientHeight;
@@ -178,6 +179,7 @@ const hideLandscapeVideo = (video, videoBackground) => {
 
 const showLandscapeVideo = (video, videoBackground) => {
    showElement(video, "show-video", true, () => {
+      // ! VIDEO SIZE                                                      
       setVideoSize();
    });
    showElement(videoBackground, "show-video-background", true, () => {
@@ -188,7 +190,7 @@ const showLandscapeVideo = (video, videoBackground) => {
 }
 
 // event listeners
-const watchPreviewVideoHandler = e => {
+const watchPreviewVideoClickHandler = e => {
    if (document.documentElement.clientWidth <= 414) return;
 
    if (e.target.closest(".watch-preview__hide")) {
@@ -202,81 +204,86 @@ const watchPreviewVideoHandler = e => {
 }
 
 const windowResizeHandler = () => {
-   if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
-      hideElement(videoBackground, "show-video-background", false, () => {
-         setPagePartsPaddingRight(true);
-         setWrapperOverflow("auto");
-         setHeaderZIndex(3);
-         setVideoSize();
-      });
+   if (getComputedStyle(youtubeVideo).display == "none" && document.documentElement.clientWidth > 414) return
+   // ! VIDEO SIZE                                                   
+   setVideoSize();
 
-      showElement(youtubeVideo, "show-video", false);
+   // if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
+   //    hideElement(videoBackground, "show-video-background", false, () => {
+   //       setPagePartsPaddingRight(true);
+   //       setWrapperOverflow("auto");
+   //       setHeaderZIndex(3);
 
-   } else if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth > 414) {
-      if (getVideoStatus() === 5) {
-         hideElement(youtubeVideo, "show-video", false);
-         hideElement(videoBackground, "show-video-background", false);
-      }
+   //    });
 
-      if (getVideoStatus() === 1 || getVideoStatus() === 2) {
-         showElement(videoBackground, "show-video-background", false);
-         setHeaderZIndex(2);
-      }
-   }
+   //    showElement(youtubeVideo, "show-video", false);
+
+   // } else if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth > 414) {
+   //    if (getVideoStatus() === 5) {
+   //       hideElement(youtubeVideo, "show-video", false);
+   //       hideElement(videoBackground, "show-video-background", false);
+   //    }
+
+   //    if (getVideoStatus() === 1 || getVideoStatus() === 2) {
+   //       showElement(videoBackground, "show-video-background", false);
+   //       setHeaderZIndex(2);
+   //    }
+   // }
 }
 
-const orientationChangeHandler = () => {
-   setVideoSize(true);
+// const orientationChangeHandler = () => {
 
-   console.log("orientationChange")
+//    // ! VIDEO SIZE                                                         
+//    // setVideoSize(true);
 
-   // ! window.matchMedia("(orientation: portrait)");
-   if (screen.orientation.type === "landscape-primary") {
-      if (getVideoStatus() === 1 || getVideoStatus() === 2) {
+//    // ! window.matchMedia("(orientation: portrait)");
+//    if (screen.orientation.type === "landscape-primary") {
+//       if (getVideoStatus() === 1 || getVideoStatus() === 2) {
 
-         // !
-         screen.orientation.unlock();
+//          // !
+//          screen.orientation.unlock();
 
-         showElement(youtubeVideo, "show-video", false);
-         showElement(videoBackground, "show-video-background", false, () => {
-            setHeaderZIndex(2);
-            setPagePartsPaddingRight(false);
+//          showElement(youtubeVideo, "show-video", false);
+//          showElement(videoBackground, "show-video-background", false, () => {
+//             setHeaderZIndex(2);
+//             setPagePartsPaddingRight(false);
 
-         });
-      }
+//          });
+//       }
 
-      if (getVideoStatus() === 5) {
-         hideElement(youtubeVideo, "show-video", false);
-         hideElement(videoBackground, "show-video-background", false);
+//       if (getVideoStatus() === 5) {
+//          hideElement(youtubeVideo, "show-video", false);
+//          hideElement(videoBackground, "show-video-background", false);
 
-      }
-   }
+//       }
+//    }
 
-   // ! window.matchMedia("(orientation: portrait)");
-   if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
-      hideElement(videoBackground, "show-video-background", false, () => {
-         setPagePartsPaddingRight(true);
-         setWrapperOverflow("auto");
-         setHeaderZIndex(3);
-      });
+//    // ! window.matchMedia("(orientation: portrait)");
+//    if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
+//       hideElement(videoBackground, "show-video-background", false, () => {
+//          setPagePartsPaddingRight(true);
+//          setWrapperOverflow("auto");
+//          setHeaderZIndex(3);
+//       });
 
-      if (getVideoStatus() === 5) {
-         showElement(youtubeVideo, "show-video", false);
-      }
-   }
-}
+//       if (getVideoStatus() === 5) {
+//          showElement(youtubeVideo, "show-video", false);
+//       }
+//    }
+// }
 
 // events------------------------------------------------------------
-watchPreviewVideo.addEventListener("click", watchPreviewVideoHandler);
+watchPreviewVideo.addEventListener("click", watchPreviewVideoClickHandler);
 watchPreviewVideo.addEventListener("touchstart", e => {
    // отмена блокировки смены ориентации на android
    e.preventDefault();
-   watchPreviewVideoHandler(e);
+   watchPreviewVideoClickHandler(e);
 });
 window.addEventListener("resize", windowResizeHandler);
 
 // ! document.addEventListener("orientationchange", updateOrientation);
-screen.orientation.addEventListener('change', orientationChangeHandler);
+// screen.orientation.addEventListener('change', orientationChangeHandler);
+
 
 
 // ? include clients elements ----------------------------------------------
