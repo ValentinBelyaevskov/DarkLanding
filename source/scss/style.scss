@@ -1,4 +1,4 @@
-@import "nullstyle.scss";
+@import "_nullstyle.scss";
 
 // font-family: 'Inter', sans-serif;
 // font-family: 'Montserrat', sans-serif;
@@ -92,7 +92,7 @@ html {
 
 body {
    color: #8476aa;
-   background: linear-gradient(222.26deg, #3b1d60 1.22%, #040d3e 106.28%);
+   // background: linear-gradient(222.26deg, #3b1d60 1.22%, #040d3e 106.28%);
    font-family: "Rubik", sans-serif;
    font-weight: 400;
 }
@@ -103,7 +103,7 @@ body {
    padding: 0 30px;
 }
 
-.page,
+.main,
 .footer {
    position: relative;
    z-index: 2;
@@ -134,10 +134,16 @@ body {
    background: linear-gradient(222.26deg, #3b1d60 1.22%, #040d3e 106.28%);
 }
 
+.wrapper-scroll-container {
+   height: 100%;
+}
+
 .wrapper {
    position: relative;
    height: fit-content;
    overflow: hidden;
+
+   height: fit-content;
 }
 
 .second-gragient-background {
@@ -581,9 +587,6 @@ body {
       }
    }
 
-   // &__watch-preview {
-   // }
-
    .watch-preview {
       min-height: 80px;
       width: 100%;
@@ -643,12 +646,26 @@ body {
 }
 
 .watch-preview {
+   &__youtube-background {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 4;
+      width: 100%;
+      height: 100%;
+
+      background-color: #1c0f30;
+   }
+
    &__youtube-video {
       overflow: hidden;
       position: fixed;
       z-index: 5;
       left: 50%;
-      top: 42%;
+      top: 50%;
+
+      transform: translate(-50%, -50%);
+      padding: 0 0 450px 0;
 
       width: 80%;
       max-width: 800px;
@@ -667,17 +684,7 @@ body {
       }
    }
 
-   &__youtube-background {
-      position: fixed;
-      left: 0;
-      top: 0;
-      z-index: 4;
-      width: 100%;
-      height: 100%;
-
-      background-color: #1c0f30;
-   }
-
+   // иконка "скрыть"
    &__hide,
    .hide {
       position: absolute;
@@ -718,13 +725,16 @@ body {
       }
    }
 
-   &__youtube-video,
-   &__youtube-background {
+   // youtube видео и фон сначала скрыты
+   &__youtube-background,
+   &__youtube-video {
       display: none;
       opacity: 0;
       transition: 0.5s ease opacity;
    }
 
+   // классы для показа видео
+   // display задаётся в js
    .show-video {
       opacity: 1;
    }
@@ -735,52 +745,10 @@ body {
 
 // .watch-preview size, landscape orientation -----------------------------------
 
-@media (min-width: 1000px) {
-   .watch-preview {
-      &__youtube-video {
-         margin-left: -400px;
-         margin-top: -450px / 2;
-         padding: 0 0 450px 0;
-      }
-   }
-}
-
 @media (max-width: 1000px) {
    .watch-preview {
       &__youtube-video {
-         margin-left: -40%;
-         margin-top: -45% / 2;
-         padding: 0 0 45% 0;
-      }
-   }
-}
-
-@media (max-width: 680px) {
-   .watch-preview {
-      &__youtube-video {
-         width: 90%;
-
-         left: 50%;
-         top: 42%;
-         margin-left: -45%;
-         margin-top: -50.625% / 2;
-
-         padding: 0 0 50.625% 0;
-      }
-   }
-}
-
-@media (max-width: 812px) and (orientation: landscape) {
-   .watch-preview {
-      &__youtube-video {
-         width: 60%;
-
-         left: 50%;
-         top: 70%;
-         margin-left: -30%;
-         margin-top: -(60% * (9 / 16)) / 2;
-
-         padding: 0 0 (60% * (9 / 16)) 0;
+         padding: 0 0 calc(56.25% * 0.8) 0;
       }
 
       .hide {
@@ -791,6 +759,13 @@ body {
    }
 }
 
+@media (max-width: 414px) {
+   .watch-preview {
+      &__youtube-video {
+         transform: translate(0, 0);
+      }
+   }
+}
 // .reasons -----------------------------------
 
 @media (max-width: 1420px) {
@@ -927,7 +902,7 @@ body {
 
          &__video {
             flex: 0 0 140px;
-            max-height: fit-content;
+            // ! max-height: fit-content;
             align-self: center;
             height: calc((100vw - 40px) * 0.325 / 1.75);
             flex: 0 0 calc((100vw - 40px) * 0.325);
@@ -979,7 +954,7 @@ body {
       .watch-preview {
          &__video {
             box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.25);
-            max-height: fit-content;
+            // ! max-height: fit-content;
             align-self: center;
             height: calc((100vw - 40px) * 0.35 / 1.75);
             flex: 0 0 calc((100vw - 40px) * 0.35);
@@ -1025,12 +1000,13 @@ body {
       }
    }
 }
-
+// ! reasons .watch-preview__video height
 @media (max-width: 414px) and (orientation: portrait) {
    .reasons {
       .watch-preview {
          &__video {
             position: relative;
+            // !
             height: calc((100vw - 30px) / 1.7777);
             width: 100%;
          }
@@ -1120,7 +1096,7 @@ body {
 
 // ? your choice -----------------------------------
 
-.pages__your-choice {
+.main__your-choice {
    margin-top: 80px;
 }
 
@@ -1289,7 +1265,7 @@ body {
 
 // .your-choice -----------------------------------------------------------
 @media (max-width: 1160px) {
-   .pages__your-choice {
+   .main__your-choice {
       margin-top: 50px;
    }
 
@@ -1321,7 +1297,7 @@ body {
 }
 
 @media (max-width: 768px) {
-   .pages__your-choice {
+   .main__your-choice {
       margin-top: 60px;
    }
 
@@ -1340,7 +1316,7 @@ body {
 
 // ? business-traffic -----------------------------------
 
-.pages__business-traffic {
+.main__business-traffic {
    margin-top: 165px;
 }
 
@@ -1423,7 +1399,7 @@ body {
          background: #1d2067;
          box-shadow: -7.15089px 14.3018px 53.6316px rgba(82, 114, 139, 0.24);
          // border-radius: ((9 / 353) * 100%);
-         border-radius: ((9 / 353) * ((353 / 231) * 100%)) / ((9 / 353) * ((400 / 231) * 100%));
+         border-radius: calc((9 / 353) * ((353 / 231) * 100%)) / ((9 / 353) * ((400 / 231) * 100%));
 
          img {
             position: absolute;
@@ -1491,7 +1467,7 @@ body {
          width: (286 / 353) * 100%;
          padding: 0 0 ((357 / 353) * 100%) 0;
 
-         border-radius: ((9 / 353) * ((353 / 286) * 100%)) / ((9 / 400) * ((400 / 357) * 100%));
+         border-radius: calc((9 / 353) * ((353 / 286) * 100%)) / ((9 / 400) * ((400 / 357) * 100%));
          overflow: hidden;
 
          img {
@@ -1679,11 +1655,14 @@ body {
 
 // ? simple-ways -----------------------------------
 
-.pages__simple-ways {
+.main__simple-ways {
    margin-top: 195px;
 }
 
 .simple-ways {
+   position: relative;
+   z-index: 2;
+
    &__title {
       @include title-style(36px, 42px, $title-fc);
       letter-spacing: 0.33px;
@@ -1742,7 +1721,7 @@ body {
 
    .simple-ways {
       &__title {
-         @include title-style(30px, 38px, $title-fc);
+         @include title-style(28px, 35px, $title-fc);
       }
 
       &__articles {
@@ -1762,13 +1741,13 @@ body {
 }
 
 @media (max-width: 992px) {
-   .pages__simple-ways {
+   .main__simple-ways {
       margin-top: 120px;
    }
 
    .simple-ways {
       &__title {
-         @include title-style(28px, 35px, $title-fc);
+         @include title-style(24px, 32px, $title-fc);
       }
 
       .item {
@@ -1782,11 +1761,15 @@ body {
 }
 
 @media (max-width: 768px) {
-   .pages__simple-ways {
+   .main__simple-ways {
       margin-top: 100px;
    }
 
    .simple-ways {
+      &__title {
+         @include title-style(22px, 32px, $title-fc);
+      }
+
       &__description {
          margin-top: 25px;
       }
@@ -1807,12 +1790,13 @@ body {
    }
 }
 
-.pages__create-project {
+.main__create-project {
    margin-top: 170px;
 }
 
 .create-project {
    position: relative;
+   z-index: 1;
 
    &__background {
       position: absolute;
@@ -1863,7 +1847,7 @@ body {
 }
 
 @media (max-width: 1160px) {
-   .pages__create-project {
+   .main__create-project {
       margin-top: 120px;
    }
 
@@ -1875,7 +1859,7 @@ body {
 }
 
 @media (max-width: 992px) {
-   .pages__create-project {
+   .main__create-project {
       margin-top: 110px;
    }
 
@@ -1893,7 +1877,7 @@ body {
 }
 
 @media (max-width: 768px) {
-   .pages__create-project {
+   .main__create-project {
       margin-top: 100px;
    }
 
@@ -1905,7 +1889,7 @@ body {
 }
 
 @media (max-width: 567px) {
-   .pages__create-project {
+   .main__create-project {
       margin-top: 50px;
    }
 
@@ -1918,13 +1902,13 @@ body {
 
 // ? invest-property ------------------------------------------
 
-.pages__invest-property {
+.main__invest-property {
    margin-top: 430px;
 }
 
 .invest-property {
    position: relative;
-   z-index: 0;
+   z-index: 1;
 
    &__container {
       position: relative;
@@ -2150,7 +2134,7 @@ body {
 
          background: #516ea9;
          box-shadow: -8px 16px 60px rgba(82, 114, 139, 0.24);
-         border-radius: ((10 / 403) * ((403 / 130) * 100%)) / ((10 / 500) * ((500 / 65) * 100%));
+         border-radius: calc((10 / 403) * ((403 / 130) * 100%)) / ((10 / 500) * ((500 / 65) * 100%));
       }
 
       .increase {
@@ -2612,11 +2596,14 @@ body {
 
 // ? ------ finding information -------------------------------------------
 
-.pages__finding-information {
+.main__finding-information {
    margin-top: 104px;
 }
 
 .finding-information {
+   position: relative;
+   z-index: 2;
+
    &__container {
       display: flex;
       align-items: center;
@@ -2774,7 +2761,7 @@ body {
 }
 
 @media (max-width: 992px) {
-   .pages__finding-information {
+   .main__finding-information {
       margin-top: 120px;
    }
 
@@ -2802,7 +2789,7 @@ body {
 }
 
 @media (max-width: 768px) {
-   .pages__finding-information {
+   .main__finding-information {
       margin-top: 30px;
    }
 
@@ -2816,6 +2803,7 @@ body {
       &__section {
          margin-top: 0;
          flex: 1 1 auto;
+         padding: 0 20px 0 20px;
       }
 
       &__images-block {
@@ -2864,11 +2852,14 @@ body {
 }
 
 // ? ----- get-down --------------------------------
-.pages__get-down {
+.main__get-down {
    margin-top: 205px;
 }
 
 .get-down {
+   position: relative;
+   z-index: 1;
+
    &__container {
       position: relative;
    }
@@ -2933,7 +2924,7 @@ body {
 
    &__input {
       flex: 0 0 ((288 / 416) * 100%);
-      background: rgb(246, 246, 246, 0.1) !important;
+      background: rgba(246, 246, 246, 0.1) !important;
       padding: 0 ((25 / 416) * 100%);
       @include page-text-style(16px, 22px);
 
@@ -2942,7 +2933,7 @@ body {
          font-size: 14px;
          line-height: 20px;
          letter-spacing: 0.2px;
-         color: rgb(255, 255, 255, 0.2);
+         color: rgba(255, 255, 255, 0.2);
       }
 
       &:-webkit-autofill,
@@ -3008,24 +2999,29 @@ body {
 }
 
 @media (max-width: 1160px) {
-   .pages__get-down {
+   .main__get-down {
       margin-top: 180px;
    }
 
    .get-down {
       &__title {
-         font-size: 30px;
-         line-height: 38px;
+         font-size: 28px;
+         line-height: 35px;
       }
    }
 }
 
 @media (max-width: 992px) {
-   .pages__get-down {
+   .main__get-down {
       margin-top: 130px;
    }
 
    .get-down {
+      &__title {
+         font-size: 24px;
+         line-height: 32px;
+      }
+
       &__form {
          height: 36px;
       }
@@ -3041,7 +3037,7 @@ body {
 }
 
 @media (max-width: 768px) {
-   .pages__get-down {
+   .main__get-down {
       margin-top: 100px;
    }
 
@@ -3053,6 +3049,11 @@ body {
       &__body-content {
          margin-top: 25px;
          width: (600 / 940) * 100%;
+      }
+
+      &__title {
+         font-size: 22px;
+         line-height: 32px;
       }
 
       &__subtitle {
@@ -3077,7 +3078,7 @@ body {
 }
 
 @media (max-width: 576px) {
-   .pages__get-down {
+   .main__get-down {
       margin-top: 60px;
    }
 
@@ -3116,13 +3117,16 @@ body {
 
 // ? ----arshakir -------------------------------
 
-.pages__arshakir {
+.main__arshakir {
    margin-top: 190px;
    position: relative;
    z-index: 1;
 }
 
 .arshakir {
+   position: relative;
+   z-index: 1;
+
    &__container {
       position: relative;
    }
@@ -3130,7 +3134,7 @@ body {
    &__body {
       position: relative;
       z-index: 1;
-      padding: 46px 54px 100px 54px;
+      padding: 46px 54px 0px 54px;
    }
 
    &__title {
@@ -3204,27 +3208,6 @@ body {
       }
    }
 
-   &__footer {
-      margin-top: 70px;
-   }
-
-   .footer {
-      font-family: Rubik;
-      font-style: normal;
-      font-weight: 300;
-      font-size: 14px;
-      line-height: 20px;
-      letter-spacing: 0.2px;
-      color: #8d8d8d;
-
-      display: flex;
-      justify-content: center;
-
-      &__item {
-         margin: 0 ((20 / 992) * 100%);
-      }
-   }
-
    &__background {
       position: absolute;
       z-index: 0;
@@ -3260,21 +3243,17 @@ body {
 }
 
 @media (max-width: 768px) {
-   .pages__arshakir {
+   .main__arshakir {
       margin-top: 130px;
    }
 
    .arshakir {
       &__body {
-         padding: 46px 15px 70px 15px;
+         padding: 46px 15px 0px 15px;
       }
 
       &__columns-body {
          margin-top: 70px;
-      }
-
-      &__footer {
-         margin-top: 40px;
       }
    }
 }
@@ -3295,14 +3274,60 @@ body {
          margin-top: 30px;
       }
 
-      .footer {
-         display: block;
-   
-         &__item {
-            text-align: center;
-            margin-top: 20px;
-         }
+      &__column {
+         padding: 0 55px;
+         padding-bottom: 50px;
       }
    }
+}
 
+@media (max-width: 414px) {
+   .arshakir {
+      &__column {
+         padding: 0 35px;
+         padding-bottom: 50px;
+      }
+   }
+}
+
+// ? ----footer -------------------------------
+
+.footer {
+   margin: 70px auto 100px auto;
+
+   &__items {
+      font-family: Rubik;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.2px;
+      color: #8d8d8d;
+
+      display: flex;
+      justify-content: center;
+   }
+
+   &__item {
+      margin: 0 ((20 / 992) * 100%);
+   }
+}
+
+@media (max-width: 768px) {
+   .footer {
+      margin-top: 40px;
+   }
+}
+
+@media (max-width: 576px) {
+   .footer {
+      &__items {
+         display: block;
+      }
+
+      &__item {
+         text-align: center;
+         margin-top: 20px;
+      }
+   }
 }

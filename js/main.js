@@ -1,21 +1,44 @@
+// ! screen.orintation не работает в safari
+
+// * Функции общего назначения
+
+// js functions
 const getValueWithoutMeasurers = value => value.split("").slice(0, -2).join("");
 
-const setBodyOverflow = overflow => document.body.style.overflow = overflow;
-
-const paddingForTheScrollHIde = () => {
-   let widthWithScroll = document.body.clientWidth;
-   setBodyOverflow("hidden");
-   let widthWithoutScroll = document.body.clientWidth;
-   let scrollbarWidth = widthWithoutScroll - widthWithScroll;
-   document.body.style.paddingRight = `${scrollbarWidth}px`;
+// DOM functions
+const setWrapperOverflow = overflow => {
+   // В safari нельзя задавать для body overflow:hidden. Поэтому создаётся дополнительная
+   // обёртка над wrapper (wrapperContainer). Задать wrapper высоту в 100vh тоже нельзя, т.к. при
+   // клике по видео со скроллом, оно сделает перемотку наверх
+   const wrapperContainer = document.querySelector(".wrapper-scroll-container");
+   wrapperContainer.style.overflow = overflow;
 }
 
-const paddingForTheScrollShow = () => {
-   document.body.style.paddingRight = 0;
+const setPagePartsPaddingRight = (haveAScrollbar) => {
+   // Элемент sections находится на одном уровне с общим фоном страницы, и padding задётся ему,
+   // что бы фон не сдвигался
+   const pageParts = document.querySelector(".page-parts");
+   const wrapperContainer = document.querySelector(".wrapper-scroll-container");
+   const wrapper = document.querySelector(".wrapper");
+
+   if (haveAScrollbar) {
+      pageParts.style.paddingRight = 0;
+   } else {
+      let widthWithScroll = wrapperContainer.clientWidth;
+      setWrapperOverflow("hidden");
+      let widthWithoutScroll = wrapper.clientWidth;
+      let scrollbarWidth = widthWithoutScroll - widthWithScroll;
+      pageParts.style.paddingRight = `${scrollbarWidth}px`;
+   }
 }
 
 const setHeaderZIndex = index => header.style.zIndex = index;
 
+const setClientsZIndex = index => {
+   clients.style.zIndex = index
+};
+
+// you-tube API functions
 const returnToStartingVideo = () => {
    player.stopVideo();
 }
@@ -25,50 +48,94 @@ const pauseVideo = () => {
 }
 
 const getVideoStatus = () => player.getPlayerState();
-// console.log(player.getPlayerState())
 
-// ? burger click ----------------------------------------------------------------
+
+// ? Burger menu click ----------------------------------------------------------------
 
 const menu = document.querySelector(".menu");
 const header = document.querySelector(".header");
-const headerBurger = document.querySelector(".header__burger");
-const menuHide = document.querySelector(".menu__hide");
-const clientsElem = document.querySelector(".clients");
+const burgerButton = document.querySelector(".header__burger");
+const menuHideButton = document.querySelector(".menu__hide");
+const clients = document.querySelector(".clients");
 
-const setBurgerStyle = (element, transitionDuration, left, callback) => {
-   element.style.transitionDuration = transitionDuration;
-   element.style.left = left;
+const setMenuTransitionDuration = transitionDuration => menu.style.transitionDuration = transitionDuration;
+
+const setMenuStyle = (transitionDuration, left, callback) => {
+   setMenuTransitionDuration(transitionDuration);
+   menu.style.left = left;
    if (callback) callback();
 }
 
-const showBurgerMenu = () => {
-   setBurgerStyle(menu, "0.5s", 0, () => {
-      paddingForTheScrollHIde();
+const showMenu = () => {
+   // Свойство transition задаётся динамически, что бы при resize
+   // (увеличение размера) в отладчике меню слева на "отставало"
+   setMenuStyle("0.5s", 0, () => {
+      setPagePartsPaddingRight(false);
       pauseVideo();
    });
 }
 
-const hideBurgerMenu = () => {
-   setBurgerStyle(menu, "0.5s", "-100vw", () => {
-      setBodyOverflow("auto");
+const hideMenu = (time) => {
+   setMenuStyle(time, "-100vw", () => {
+      setWrapperOverflow("auto");
    });
-   paddingForTheScrollShow();
+   setPagePartsPaddingRight(true);
 }
 
-// * header events--------------------------------------------------------------
-headerBurger.addEventListener("click", () => {
-   showBurgerMenu();
+// events--------------------------------------------------------------
+burgerButton.addEventListener("click", () => {
+   showMenu();
+   console.log("clickBurger")
 });
-menuHide.addEventListener("click", hideBurgerMenu);
-menu.addEventListener("transitionend", () => menu.style.transitionDuration = "0s");
+menuHideButton.addEventListener("click", () => hideMenu("0.5s"));
+menu.addEventListener("transitionend", () => setMenuTransitionDuration("0s"));
+window.addEventListener("resize", () => hideMenu("0"));
 
 
-// ? watch-preview click --------------------------------------------------------
+// ? Play video click --------------------------------------------------------
 
 const playButton = document.querySelector(".watch-preview__play-video");
 const watchPreviewVideo = document.querySelector(".watch-preview__video");
 const youtubeVideo = document.querySelector(".watch-preview__youtube-video");
 const videoBackground = document.querySelector(".watch-preview__youtube-background");
+
+const videoJustifiedAlignment = () => {
+   youtubeVideo.style.padding = "0 0 calc(56.25% * 0.8) 0";
+   youtubeVideo.style.width = "80%";
+}
+
+const videoHeightAlignment = () => {
+   youtubeVideo.style.padding = "0 0 60vh 0";
+   youtubeVideo.style.width = "calc(60vh * (16 / 9))";
+}
+
+const videoContainerAlingment = () => {
+   youtubeVideo.style.width = "100%";
+   youtubeVideo.style.padding = "0 0 56.25% 0";
+}
+
+const videoBighWidthAlingment = () => {
+   youtubeVideo.style.width = "800px";
+   youtubeVideo.style.padding = "0 0 450px 0";
+}
+
+const setVideoSize = (orientationChange) => {
+   const width = orientationChange ? document.documentElement.clientHeight : document.documentElement.clientWidth;
+   const height = orientationChange ? document.documentElement.clientWidth : document.documentElement.clientHeight;
+   const ratio =  width / height;
+
+   // console.log(orientationChange, width, height);
+
+   if (width > 1024) {
+      videoBighWidthAlingment();
+   } else if (width <= 414) {
+      videoContainerAlingment();
+   } else if (ratio < (1024 / 768)) {
+      videoJustifiedAlignment();
+   } else if (ratio > (1024 / 768)) {
+      videoHeightAlignment();
+   }
+}
 
 const showElement = (element, showClass, animate, callback) => {
    element.style.display = "unset";
@@ -98,25 +165,29 @@ const hideElement = (element, showClass, animate, callback) => {
 const hideLandscapeVideo = (video, videoBackground) => {
    hideElement(video, "show-video", true);
    hideElement(videoBackground, "show-video-background", true, () => {
-      paddingForTheScrollShow();
-      setBodyOverflow("auto");
+      setPagePartsPaddingRight(true);
+      setWrapperOverflow("auto");
       setHeaderZIndex(3);
+      // для android.
       screen.orientation.unlock();
       returnToStartingVideo();
-      clientsElem.style.zIndex = 2;
+      setClientsZIndex(2);
    });
    pauseVideo();
 }
 
 const showLandscapeVideo = (video, videoBackground) => {
-   showElement(video, "show-video", true);
+   showElement(video, "show-video", true, () => {
+      setVideoSize();
+   });
    showElement(videoBackground, "show-video-background", true, () => {
       setHeaderZIndex(2);
-      paddingForTheScrollHIde();
-      clientsElem.style.zIndex = 1;
+      setPagePartsPaddingRight(false);
+      setClientsZIndex(1);
    });
 }
 
+// event listeners
 const watchPreviewVideoHandler = e => {
    if (document.documentElement.clientWidth <= 414) return;
 
@@ -133,9 +204,10 @@ const watchPreviewVideoHandler = e => {
 const windowResizeHandler = () => {
    if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
       hideElement(videoBackground, "show-video-background", false, () => {
-         paddingForTheScrollShow();
-         setBodyOverflow("auto");
+         setPagePartsPaddingRight(true);
+         setWrapperOverflow("auto");
          setHeaderZIndex(3);
+         setVideoSize();
       });
 
       showElement(youtubeVideo, "show-video", false);
@@ -154,13 +226,21 @@ const windowResizeHandler = () => {
 }
 
 const orientationChangeHandler = () => {
+   setVideoSize(true);
+
+   console.log("orientationChange")
+
+   // ! window.matchMedia("(orientation: portrait)");
    if (screen.orientation.type === "landscape-primary") {
       if (getVideoStatus() === 1 || getVideoStatus() === 2) {
+
+         // !
          screen.orientation.unlock();
+
          showElement(youtubeVideo, "show-video", false);
          showElement(videoBackground, "show-video-background", false, () => {
             setHeaderZIndex(2);
-            paddingForTheScrollHIde();
+            setPagePartsPaddingRight(false);
 
          });
       }
@@ -172,10 +252,11 @@ const orientationChangeHandler = () => {
       }
    }
 
+   // ! window.matchMedia("(orientation: portrait)");
    if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
       hideElement(videoBackground, "show-video-background", false, () => {
-         paddingForTheScrollShow();
-         setBodyOverflow("auto");
+         setPagePartsPaddingRight(true);
+         setWrapperOverflow("auto");
          setHeaderZIndex(3);
       });
 
@@ -185,24 +266,28 @@ const orientationChangeHandler = () => {
    }
 }
 
-// * burger events------------------------------------------------------------
+// events------------------------------------------------------------
 watchPreviewVideo.addEventListener("click", watchPreviewVideoHandler);
 watchPreviewVideo.addEventListener("touchstart", e => {
+   // отмена блокировки смены ориентации на android
    e.preventDefault();
    watchPreviewVideoHandler(e);
 });
 window.addEventListener("resize", windowResizeHandler);
+
+// ! document.addEventListener("orientationchange", updateOrientation);
 screen.orientation.addEventListener('change', orientationChangeHandler);
+
 
 // ? include clients elements ----------------------------------------------
 
-const clients = [
-   {name: "profitWell", logo: "image/clients/profit_well.svg"},
-   {name: "appcues", logo: "image/clients/appcues.svg"},
-   {name: "snipBob", logo: "image/clients/snip_bob.svg"},
-   {name: "bench", logo: "image/clients/bench.svg"},
-   {name: "subbly", logo: "image/clients/subbly.svg"},
-   {name: "demio", logo: "image/clients/demio.svg"},
+const clientsArr = [
+   { name: "profitWell", logo: "image/clients/profit_well.svg" },
+   { name: "appcues", logo: "image/clients/appcues_.svg" },
+   { name: "snipBob", logo: "image/clients/snip_bob.svg" },
+   { name: "bench", logo: "image/clients/bench.svg" },
+   { name: "subbly", logo: "image/clients/subbly.svg" },
+   { name: "demio", logo: "image/clients/demio.svg" },
 ]
 
 const createClientsItem = (parentElement, client) => {
@@ -216,6 +301,6 @@ const createClientsItem = (parentElement, client) => {
    parentElement.append(clientItem)
 }
 
-clients.forEach(item => {
+clientsArr.forEach(item => {
    createClientsItem(document.querySelector(".clients__block"), item)
 })
