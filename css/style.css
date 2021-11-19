@@ -152,9 +152,6 @@ body {
   background: linear-gradient(180deg, rgba(15, 17, 68, 0) 0%, #0f1144 9.57%);
 }
 
-.header {
-  overflow: hidden;
-}
 .header__container {
   display: -ms-grid;
   display: grid;
@@ -548,7 +545,6 @@ body {
           align-items: center;
   position: relative;
   z-index: 2;
-  overflow: hidden;
 }
 .reasons__content {
   -ms-flex-item-align: start;

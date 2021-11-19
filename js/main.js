@@ -77,7 +77,7 @@ const showMenu = () => {
 
 const hideMenu = (time) => {
    setMenuStyle(time, "-100vw", () => {
-      setWrapperOverflow("auto");
+      setWrapperOverflow("visible");
    });
    setPagePartsPaddingRight(true);
 }
@@ -169,7 +169,7 @@ const hideLandscapeVideo = (video, videoBackground) => {
    hideElement(video, "show-video", true);
    hideElement(videoBackground, "show-video-background", true, () => {
       setPagePartsPaddingRight(true);
-      setWrapperOverflow("auto");
+      setWrapperOverflow("visible");
       setHeaderZIndex(3);
       // для android.
       screen.orientation.unlock();
@@ -213,7 +213,7 @@ const windowResizeHandler = () => {
    // if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
    //    hideElement(videoBackground, "show-video-background", false, () => {
    //       setPagePartsPaddingRight(true);
-   //       setWrapperOverflow("auto");
+   //       setWrapperOverflow("visible");
    //       setHeaderZIndex(3);
 
    //    });
@@ -264,7 +264,7 @@ const windowResizeHandler = () => {
 //    if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
 //       hideElement(videoBackground, "show-video-background", false, () => {
 //          setPagePartsPaddingRight(true);
-//          setWrapperOverflow("auto");
+//          setWrapperOverflow("visible");
 //          setHeaderZIndex(3);
 //       });
 

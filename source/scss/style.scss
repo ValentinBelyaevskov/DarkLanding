@@ -159,7 +159,7 @@ body {
 // ? ---header----------------------------------------------------------------
 
 .header {
-   overflow: hidden;
+   // overflow: hidden;
    &__container {
       display: grid;
       grid-template-columns: 36px minmax(400px, 820px) minmax(244px, 664px);
@@ -528,7 +528,7 @@ body {
    // ! z-index--------------------------
    position: relative;
    z-index: 2;
-   overflow: hidden;
+   // overflow: hidden;
 
    &__content {
       align-self: start;
