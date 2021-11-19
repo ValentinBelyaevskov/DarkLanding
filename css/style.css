@@ -540,7 +540,6 @@ body {
   }
 }
 .reasons {
-  overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -549,6 +548,7 @@ body {
           align-items: center;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 }
 .reasons__content {
   -ms-flex-item-align: start;

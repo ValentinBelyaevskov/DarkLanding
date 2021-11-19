@@ -523,12 +523,12 @@ body {
 // ? ---reasons----------------------------------------------------------------
 
 .reasons {
-   overflow: hidden;
    display: flex;
    align-items: center;
    // ! z-index--------------------------
    position: relative;
    z-index: 2;
+   overflow: hidden;
 
    &__content {
       align-self: start;

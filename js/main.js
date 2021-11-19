@@ -89,7 +89,9 @@ burgerButton.addEventListener("click", () => {
 });
 menuHideButton.addEventListener("click", () => hideMenu("0.5s"));
 menu.addEventListener("transitionend", () => setMenuTransitionDuration("0s"));
-window.addEventListener("resize", () => hideMenu("0"));
+window.addEventListener("resize", () => {
+   if ( getComputedStyle(menu).left === "0px" ) hideMenu("0")
+});
 
 
 // ? Video play button click --------------------------------------------------------
