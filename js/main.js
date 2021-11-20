@@ -110,21 +110,25 @@ const setClientsZIndex = index => {
 const videoJustifiedAlignment = () => {
    youtubeVideo.style.padding = "0 0 calc(56.25% * 0.8) 0";
    youtubeVideo.style.width = "80%";
+   youtubeVideo.style.height = "0";
 }
 
 const videoHeightAlignment = () => {
    youtubeVideo.style.padding = "0 0 60vh 0";
    youtubeVideo.style.width = "calc(60vh * (16 / 9))";
+   youtubeVideo.style.height = "0";
 }
 
 const videoContainerAlingment = () => {
    youtubeVideo.style.width = "100%";
-   youtubeVideo.style.padding = "0 0 56.25% 0";
+   youtubeVideo.style.height = "100%";
+   youtubeVideo.style.padding = "0";
 }
 
 const videoBighWidthAlingment = () => {
    youtubeVideo.style.width = "800px";
    youtubeVideo.style.padding = "0 0 450px 0";
+   youtubeVideo.style.height = "0";
 }
 
 // ! VIDEO SIZE                                                      
@@ -181,7 +185,7 @@ const hideLandscapeVideo = (video, videoBackground, animate) => {
       setWrapperScrollContainerOverflow("visible");
       setHeaderZIndex(3);
       // для android.
-      screen.orientation.unlock();
+      // screen.orientation.unlock();
       returnToStartingVideo();
       setClientsZIndex(2);
    });
@@ -229,8 +233,8 @@ const windowResizeHandler = () => {
 
    // Если видео не проигрывается и ширина экрана больше
    // чем 414px, прекратить обработку
-   if ( (getVideoStatus() === 5 || getVideoStatus() === -1)
-      && document.documentElement.clientWidth > 414 ) return
+   if ((getVideoStatus() === 5 || getVideoStatus() === -1)
+      && document.documentElement.clientWidth > 414) return
    // ! VIDEO SIZE                                                   
    setVideoSize();
 
@@ -351,3 +355,6 @@ const createClientsItem = (parentElement, client) => {
 clientsArr.forEach(item => {
    createClientsItem(document.querySelector(".clients__block"), item)
 })
+
+watchPreviewVideo.addEventListener("click", () => console.log("clicked"))
+console.log(youtubeVideo.firstElementChild)
