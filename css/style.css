@@ -1191,8 +1191,6 @@ body {
     padding-left: 0;
     margin-top: 20px;
   }
-}
-@media (max-width: 414px) and (orientation: portrait) {
   .reasons .watch-preview__video {
     position: relative;
     height: calc((100vw - 30px) / 1.7777);

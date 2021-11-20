@@ -6,7 +6,7 @@
 const getValueWithoutMeasurers = value => value.split("").slice(0, -2).join("");
 
 // DOM functions
-const setWrapperOverflow = overflow => {
+const setWrapperScrollContainerOverflow = overflow => {
    // В safari нельзя задавать для body overflow:hidden. Поэтому создаётся дополнительная
    // обёртка над wrapper (wrapperContainer). Задать wrapper высоту в 100vh тоже нельзя, т.к. при
    // клике по видео со скроллом, оно сделает перемотку наверх
@@ -25,18 +25,12 @@ const setPagePartsPaddingRight = (haveAScrollbar) => {
       pageParts.style.paddingRight = 0;
    } else {
       let widthWithScroll = wrapperContainer.clientWidth;
-      setWrapperOverflow("hidden");
+      setWrapperScrollContainerOverflow("hidden");
       let widthWithoutScroll = wrapper.clientWidth;
       let scrollbarWidth = widthWithoutScroll - widthWithScroll;
       pageParts.style.paddingRight = `${scrollbarWidth}px`;
    }
 }
-
-const setHeaderZIndex = index => header.style.zIndex = index;
-
-const setClientsZIndex = index => {
-   clients.style.zIndex = index
-};
 
 // you-tube API functions
 const returnToStartingVideo = () => {
@@ -48,6 +42,12 @@ const pauseVideo = () => {
 }
 
 const getVideoStatus = () => player.getPlayerState();
+// -1 – воспроизведение видео не началось
+// 0 – воспроизведение видео завершено
+// 1 – воспроизведение
+// 2 – пауза
+// 3 – буферизация
+// 5 – видео находится в очереди
 
 
 // ? Burger menu click ----------------------------------------------------------------
@@ -77,7 +77,7 @@ const showMenu = () => {
 
 const hideMenu = (time) => {
    setMenuStyle(time, "-100vw", () => {
-      setWrapperOverflow("visible");
+      setWrapperScrollContainerOverflow("visible");
    });
    setPagePartsPaddingRight(true);
 }
@@ -85,12 +85,12 @@ const hideMenu = (time) => {
 // events--------------------------------------------------------------
 burgerButton.addEventListener("click", () => {
    showMenu();
-   console.log("clickBurger")
+   console.log("clickBurger");
 });
 menuHideButton.addEventListener("click", () => hideMenu("0.5s"));
 menu.addEventListener("transitionend", () => setMenuTransitionDuration("0s"));
 window.addEventListener("resize", () => {
-   if ( getComputedStyle(menu).left === "0px" ) hideMenu("0")
+   if (getComputedStyle(menu).left === "0px") hideMenu("0")
 });
 
 
@@ -100,6 +100,12 @@ const playButton = document.querySelector(".watch-preview__play-video");
 const watchPreviewVideo = document.querySelector(".watch-preview__video");
 const youtubeVideo = document.querySelector(".watch-preview__youtube-video");
 const videoBackground = document.querySelector(".watch-preview__youtube-background");
+
+const setHeaderZIndex = index => header.style.zIndex = index;
+
+const setClientsZIndex = index => {
+   clients.style.zIndex = index
+};
 
 const videoJustifiedAlignment = () => {
    youtubeVideo.style.padding = "0 0 calc(56.25% * 0.8) 0";
@@ -125,7 +131,7 @@ const videoBighWidthAlingment = () => {
 const setVideoSize = (orientationChange) => {
    const width = orientationChange ? document.documentElement.clientHeight : document.documentElement.clientWidth;
    const height = orientationChange ? document.documentElement.clientWidth : document.documentElement.clientHeight;
-   const ratio =  width / height;
+   const ratio = width / height;
 
    // console.log(orientationChange, width, height);
 
@@ -141,6 +147,8 @@ const setVideoSize = (orientationChange) => {
 }
 
 const showElement = (element, showClass, animate, callback) => {
+   // Если сразу задать в css display: unset; и opacity: 1, плавной анимации не будет
+   // Нужно сначала задать display: unset, затем сделать opacity: 1;
    element.style.display = "unset";
    if (animate) {
       setTimeout(() => {
@@ -153,6 +161,7 @@ const showElement = (element, showClass, animate, callback) => {
 }
 
 const hideElement = (element, showClass, animate, callback) => {
+   // Нет класса hide video. Видимость определяется наличием/отсутствием класса show-video
    element.classList.remove(showClass);
    if (animate) {
       element.addEventListener("transitionend", () => {
@@ -165,11 +174,11 @@ const hideElement = (element, showClass, animate, callback) => {
    }
 }
 
-const hideLandscapeVideo = (video, videoBackground) => {
-   hideElement(video, "show-video", true);
-   hideElement(videoBackground, "show-video-background", true, () => {
+const hideLandscapeVideo = (video, videoBackground, animate) => {
+   hideElement(video, "show-video", animate);
+   hideElement(videoBackground, "show-video-background", animate, () => {
       setPagePartsPaddingRight(true);
-      setWrapperOverflow("visible");
+      setWrapperScrollContainerOverflow("visible");
       setHeaderZIndex(3);
       // для android.
       screen.orientation.unlock();
@@ -179,12 +188,12 @@ const hideLandscapeVideo = (video, videoBackground) => {
    pauseVideo();
 }
 
-const showLandscapeVideo = (video, videoBackground) => {
-   showElement(video, "show-video", true, () => {
+const showLandscapeVideo = (video, videoBackground, animate) => {
+   showElement(video, "show-video", animate, () => {
       // ! VIDEO SIZE                                                      
       setVideoSize();
    });
-   showElement(videoBackground, "show-video-background", true, () => {
+   showElement(videoBackground, "show-video-background", animate, () => {
       setHeaderZIndex(2);
       setPagePartsPaddingRight(false);
       setClientsZIndex(1);
@@ -196,27 +205,56 @@ const watchPreviewVideoClickHandler = e => {
    if (document.documentElement.clientWidth <= 414) return;
 
    if (e.target.closest(".watch-preview__hide")) {
-      hideLandscapeVideo(youtubeVideo, videoBackground);
+      hideLandscapeVideo(youtubeVideo, videoBackground, true);
       return;
    }
 
    if (e.target.className !== "watch-preview__play-video") return;
 
-   showLandscapeVideo(youtubeVideo, videoBackground);
+   showLandscapeVideo(youtubeVideo, videoBackground, true);
 }
 
 const windowResizeHandler = () => {
-   if (getComputedStyle(youtubeVideo).display == "none" && document.documentElement.clientWidth > 414) return
+   // debugger
+   console.log(getComputedStyle(youtubeVideo).display)
+   // При ширине экрана больше 414px и если видео не проигрывается
+   // скрыть видео
+   if (document.documentElement.clientWidth > 414
+      && (getVideoStatus() === 5 || getVideoStatus() === -1)
+      && youtubeVideo.classList.contains("show-video")) {
+      // hideElement(youtubeVideo, "show-video", false);
+      hideLandscapeVideo(youtubeVideo, videoBackground, false)
+      console.log("hide pause video in large display")
+   }
+
+   // Если видео не проигрывается и ширина экрана больше
+   // чем 414px, прекратить обработку
+   if ( (getVideoStatus() === 5 || getVideoStatus() === -1)
+      && document.documentElement.clientWidth > 414 ) return
    // ! VIDEO SIZE                                                   
    setVideoSize();
 
-   // if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
-   //    hideElement(videoBackground, "show-video-background", false, () => {
-   //       setPagePartsPaddingRight(true);
-   //       setWrapperOverflow("visible");
-   //       setHeaderZIndex(3);
+   // Если ширина экрана меньше 414px, скрыть фон видео
+   if (document.documentElement.clientWidth <= 414) {
+      hideElement(videoBackground, "show-video-background", false, () => {
+         setPagePartsPaddingRight(true);
+         setWrapperScrollContainerOverflow("visible");
+         setHeaderZIndex(3);
 
-   //    });
+      });
+      showElement(youtubeVideo, "show-video", false);
+   }
+
+   // Если ширина экрана меньше 414px и видео проигрывается,
+   // показать видео вместе с фоном
+   if (document.documentElement.clientWidth > 414
+      && (getVideoStatus() === 1 || getVideoStatus() === 2)) {
+      showLandscapeVideo(youtubeVideo, videoBackground, false);
+      console.log("w > 414 & video play/pause")
+   }
+
+
+
 
    //    showElement(youtubeVideo, "show-video", false);
 
@@ -264,7 +302,7 @@ const windowResizeHandler = () => {
 //    if (screen.orientation.type === "portrait-primary" && document.documentElement.clientWidth <= 414) {
 //       hideElement(videoBackground, "show-video-background", false, () => {
 //          setPagePartsPaddingRight(true);
-//          setWrapperOverflow("visible");
+//          setWrapperScrollContainerOverflow("visible");
 //          setHeaderZIndex(3);
 //       });
 
